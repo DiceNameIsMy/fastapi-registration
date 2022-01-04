@@ -34,3 +34,15 @@ class CreateUser(_UserBase):
         if values["password1"] != values["password2"]:
             raise ValueError("Passwords do not match")
         return values
+
+    def dict_to_create(self) -> dict:
+        return {
+            "phone": self.phone,
+            "email": self.email,
+            "password": self.password,
+        }
+
+
+class PaginatedUsers(BaseModel):
+    items: list[UserRepr]
+    total: int

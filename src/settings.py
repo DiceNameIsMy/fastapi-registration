@@ -20,7 +20,7 @@ class DBSettings(BaseSettings):
         env_prefix = "DB_"
 
 
-class settings(BaseSettings):
+class Settings(BaseSettings):
     debug: bool = True
     title: str = "fastapi-registration"
 
@@ -29,4 +29,4 @@ class settings(BaseSettings):
     db: DBSettings = DBSettings()
 
 
-settings = settings()
+settings = Settings()

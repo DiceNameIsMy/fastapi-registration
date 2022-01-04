@@ -1,9 +1,14 @@
+from sqlalchemy.orm.session import Session
+
 from repository.database import SessionLocal
+from repository import Repository
 
 
-def get_db_session():
-    session = SessionLocal()
+def get_repository():
+    session: Session = SessionLocal()
+    repository = Repository(session)
     try:
-        yield session
+        yield repository
     finally:
-        session.close()
+        repository.commit()
+        repository.close_connection()

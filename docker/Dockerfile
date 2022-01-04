@@ -12,13 +12,10 @@ WORKDIR ${APP_HOME}
 
 # install dependencies
 COPY Pipfile.lock Pipfile ./
-RUN pipenv install
+RUN pipenv install --dev
 
 # copy entrypoint
 COPY entrypoint.sh /run/entrypoint.sh
 RUN chmod +x /run/entrypoint.sh
-
-# copy project
-COPY src $APP_HOME
 
 ENTRYPOINT [ "/run/entrypoint.sh" ]

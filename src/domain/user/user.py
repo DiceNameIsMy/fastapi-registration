@@ -1,34 +1,15 @@
-from sqlalchemy.orm.session import Session
-
-from settings import settings
-
-from repository.models import UserModel
-
-from .schemes import User, UserRepr, CreateUser
+from repository import Repository
+from repository.schemes import User, CreateUser, PaginatedUsers
 
 
 class UserDomain:
-    def __init__(self, session: Session) -> None:
-        self.session = session
+    def __init__(self, repository: Repository) -> None:
+        self.repository = repository
 
     def create_user(self, new_user: CreateUser, commit: bool = False) -> User:
-        user = UserModel(new_user.dict())
-        self.session.add(user)
-        if commit:
-            self._commit()
-
+        user = self.repository.create_user(new_user=new_user, commit=commit)
         return User.from_orm(user)
 
-    def get_users(
-        self, page: int = 0, page_size: int = settings.page_size
-    ) -> list[UserRepr]:
-        users = (
-            self.session.query(UserModel)
-            .limit(page_size)
-            .offset(page * page_size)
-            .all()
-        )
-        return [UserRepr.from_orm(user) for user in users]
-
-    def _commit(self):
-        self.session.commit()
+    def get_paginated_users(self, page: int, page_size: int) -> PaginatedUsers:
+        users = self.repository.get_users(page=page, page_size=page_size)
+        return PaginatedUsers(items=users, total=len(users))
