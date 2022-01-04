@@ -1,0 +1,16 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.0.1
+    hooks:
+      - id: trailing-whitespace
+        exclude: alembic/versions/|Pipfile
+      - id: end-of-file-fixer
+        exclude: alembic/versions/|Pipfile
+      - id: check-yaml
+        exclude: alembic/versions/|Pipfile
+
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+        exclude: (alembic/versions/|__init__.py)
