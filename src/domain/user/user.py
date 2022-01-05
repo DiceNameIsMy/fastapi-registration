@@ -1,13 +1,13 @@
-from repository import Repository
+from repository import BaseRepository
 from repository.schemes import User, CreateUser, PaginatedUsers
 
 
 class UserDomain:
-    def __init__(self, repository: Repository) -> None:
+    def __init__(self, repository: BaseRepository) -> None:
         self.repository = repository
 
-    def create_user(self, new_user: CreateUser, commit: bool = False) -> User:
-        user = self.repository.create_user(new_user=new_user, commit=commit)
+    def create_user(self, new_user: CreateUser) -> User:
+        user = self.repository.create_user(new_user=new_user, commit=True)
         return User.from_orm(user)
 
     def get_paginated_users(self, page: int, page_size: int) -> PaginatedUsers:

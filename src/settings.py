@@ -2,6 +2,7 @@ from pydantic import BaseSettings
 
 
 class DBSettings(BaseSettings):
+    fake: bool = False
     host: str = "localhost"
     port: int = 5432
     user: str

@@ -33,6 +33,8 @@ class CreateUser(_UserBase):
     def check_passwords_match(cls, values):
         if values["password1"] != values["password2"]:
             raise ValueError("Passwords do not match")
+        if not any((values.get("email", None), values.get("phone", None))):
+            raise ValueError("Email or Phone is required")
         return values
 
     def dict_to_create(self) -> dict:

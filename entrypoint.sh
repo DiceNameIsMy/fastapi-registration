@@ -2,6 +2,8 @@
 
 pipenv run alembic upgrade head
 
-pipenv run pytest
+export DB_FAKE=1
+pipenv run pytest -vv
+export DB_FAKE=0
 
 exec "$@"
