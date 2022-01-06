@@ -18,7 +18,7 @@ class User(_UserBase):
 
 
 class UserRepr(_UserBase):
-    is_active: bool
+    pass
 
 
 class CreateUser(_UserBase):

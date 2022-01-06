@@ -15,7 +15,7 @@ router = APIRouter(
 users_router = APIRouter(prefix="/users", tags=["users"])
 
 
-@users_router.get("", response_model=PaginatedUsers, status_code=200)
+@users_router.get("/", response_model=PaginatedUsers, status_code=200)
 def get_users(
     page: int = 0,
     page_size: int = settings.page_size,
@@ -24,12 +24,20 @@ def get_users(
     return user_domain.get_paginated_users(page=page, page_size=page_size)
 
 
-@users_router.post("", response_model=UserRepr, status_code=201)
+@users_router.post("/", response_model=UserRepr, status_code=201)
 def create_user(
     new_user: CreateUser,
     user_domain: UserDomain = Depends(get_user_domain),
 ):
     return user_domain.create_user(new_user=new_user)
+
+
+@users_router.get("/{user_id}", response_model=UserRepr, status_code=200)
+def get_user(
+    user_id: int,
+    user_domain: UserDomain = Depends(get_user_domain),
+):
+    return user_domain.get_user_by_id(user_id)
 
 
 router.include_router(users_router)
