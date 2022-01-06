@@ -24,6 +24,7 @@ class UserRepr(_UserBase):
 class CreateUser(_UserBase):
     password1: str
     password2: str
+    is_active: bool = True
 
     @property
     def password(self) -> str:
@@ -38,9 +39,7 @@ class CreateUser(_UserBase):
         return values
 
     def dict_to_create(self) -> dict:
-        return {
-            "phone": self.phone,
-            "email": self.email,
+        return self.dict(include={"email", "phone", "is_active"}) | {
             "password": self.password,
         }
 

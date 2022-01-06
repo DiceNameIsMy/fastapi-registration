@@ -5,6 +5,7 @@ from sqlalchemy.orm.session import Session
 
 from settings import settings
 
+from .database import SessionLocal
 from .models import UserModel
 from .schemes import User, UserRepr, CreateUser
 
@@ -24,8 +25,8 @@ class BaseRepository(ABC):
 
 
 class Repository(BaseRepository):
-    def __init__(self, session: Session) -> None:
-        self.session = session
+    def __init__(self) -> None:
+        self.session: Session = SessionLocal()
 
     def create_user(self, new_user: CreateUser, commit: bool = False) -> User:
         user = UserModel(**new_user.dict_to_create())
@@ -57,20 +58,26 @@ fake_database = {"users": []}
 
 
 class FakeRepository(BaseRepository):
-    def __init__(self, session: Session) -> None:
+    def __init__(self) -> None:
         self.db = fake_database
 
     def create_user(self, new_user: CreateUser, commit: bool) -> User:
         user = new_user.dict_to_create()
         self.db["users"].append(user)
-        return User(**user, is_active=True)
+        return User(**user)
 
     def get_users(self, page: int, page_size: int) -> list[UserRepr]:
         users = self.db["users"][page * page_size: page_size]
-        return [UserRepr(**user, is_active=True) for user in users]
+        return [UserRepr(**user) for user in users]
+
+    def commit(self) -> None:
+        pass
+
+    def close_connection(self) -> None:
+        pass
 
 
-def get_repository() -> Type[BaseRepository]:
+def get_repository_class() -> Type[BaseRepository]:
     if settings.db.fake:
         return FakeRepository
 

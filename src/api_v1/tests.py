@@ -1,18 +1,13 @@
 from fastapi.testclient import TestClient
 
-from main import app
 
-
-client = TestClient(app)
-
-
-def test_get_users():
+def test_get_users(client: TestClient):
     response = client.get("/api/v1/users")
     assert response.status_code == 200
     assert response.json() == {"items": [], "total": 0}
 
 
-def test_create_user():
+def test_create_user(client: TestClient):
     excepted_user = {
         "email": "test@test.com",
         "phone": None,

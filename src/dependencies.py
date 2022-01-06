@@ -1,15 +1,11 @@
-from sqlalchemy.orm.session import Session
-
-from repository.database import SessionLocal
-from repository import BaseRepository, get_repository
+from repository import BaseRepository, get_repository_class
 
 
-repository_class = get_repository()
+repository_class = get_repository_class()
 
 
 def get_repository() -> BaseRepository:
-    session: Session = SessionLocal()
-    repository = repository_class(session)
+    repository = repository_class()
     try:
         yield repository
     finally:
