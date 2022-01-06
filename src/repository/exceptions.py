@@ -13,3 +13,13 @@ class IntegrityError(RepositoryError):
         self.message = message.format(", ".join(fields))
 
         super().__init__(self.message)
+
+
+class DoesNotExistError(RepositoryError):
+    """Called when no model matching to a query was found"""
+
+    def __init__(
+        self, model, message: str = "{} matching to a query does not exist"
+    ) -> None:
+        self.message = message.format(model)
+        super().__init__(self.message)

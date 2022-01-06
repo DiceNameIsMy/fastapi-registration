@@ -9,7 +9,7 @@ from settings import settings
 from .database import SessionLocal
 from .models import UserModel
 from .schemes import User, CreateUser
-from .exceptions import IntegrityError
+from .exceptions import IntegrityError, DoesNotExistError
 
 
 class BaseRepository(ABC):
@@ -54,7 +54,10 @@ class Repository(BaseRepository):
 
     def get_user_by_id(self, user_id) -> User:
         user = self.session.query(UserModel).get(user_id)
-        return User.from_orm(user)
+        if user is not None:
+            return User.from_orm(user)
+        else:
+            raise DoesNotExistError(UserModel)
 
     def commit(self):
         try:

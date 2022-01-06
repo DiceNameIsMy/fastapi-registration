@@ -4,7 +4,7 @@ from domain.user import UserDomain
 from domain.dependencies import get_user_domain
 
 from repository.schemes import CreateUser, UserRepr, PaginatedUsers
-from repository.exceptions import IntegrityError
+from repository.exceptions import IntegrityError, DoesNotExistError
 
 from settings import settings
 
@@ -41,7 +41,10 @@ def get_user(
     user_id: int,
     user_domain: UserDomain = Depends(get_user_domain),
 ):
-    return user_domain.get_user_by_id(user_id)
+    try:
+        return user_domain.get_user_by_id(user_id)
+    except DoesNotExistError:
+        raise HTTPException(404, "Not found")
 
 
 router.include_router(users_router)
