@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from domain.user import UserDomain
 from domain.dependencies import get_user_domain
 
 from repository.schemes import CreateUser, UserRepr, PaginatedUsers
+from repository.exceptions import IntegrityError
 
 from settings import settings
 
@@ -29,7 +30,10 @@ def create_user(
     new_user: CreateUser,
     user_domain: UserDomain = Depends(get_user_domain),
 ):
-    return user_domain.create_user(new_user=new_user)
+    try:
+        return user_domain.create_user(new_user=new_user)
+    except IntegrityError as e:
+        raise HTTPException(status_code=400, detail=e.message)
 
 
 @users_router.get("/{user_id}", response_model=UserRepr, status_code=200)
