@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  api:
+  test_api:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
@@ -9,13 +9,13 @@ services:
     volumes:
       - ./src:/app
     env_file:
-      - env_conf/.env
+      - env_conf/.test.env
     ports:
       - 8000:8000
     depends_on:
-      - db
+      - test_db
 
-  db:
+  test_db:
     image: postgres:14-alpine
     environment:
       - POSTGRES_USER=postgres
