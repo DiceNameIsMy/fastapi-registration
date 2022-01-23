@@ -1,3 +1,3 @@
-from .repository import BaseRepository, Repository, get_repository_class
+from .repository import Repository, get_repository_class
 
-__all__ = ["BaseRepository", "Repository", "get_repository_class"]
+__all__ = ["Repository", "get_repository_class"]

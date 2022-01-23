@@ -11,14 +11,23 @@ class _UserBase(BaseModel):
         orm_mode = True
 
 
+class UserRepr(_UserBase):
+    pass
+
+
+class UserProfile(_UserBase):
+    id: Optional[int]
+
+
 class User(_UserBase):
     id: Optional[int]
     password: str
     is_active: bool
 
-
-class UserRepr(_UserBase):
-    pass
+    def update(self, upd_user: UserRepr) -> None:
+        data = upd_user.dict(exclude_none=True)
+        for key in data:
+            setattr(self, key, data[key])
 
 
 class CreateUser(_UserBase):

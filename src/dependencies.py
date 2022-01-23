@@ -1,10 +1,10 @@
-from repository import BaseRepository, get_repository_class
+from repository import Repository, get_repository_class
 
 
 repository_class = get_repository_class()
 
 
-def get_repository() -> BaseRepository:
+def get_repository() -> Repository:
     repository = repository_class()
     try:
         yield repository

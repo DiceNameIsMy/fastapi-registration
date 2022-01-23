@@ -1,13 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 
 from domain.user import UserDomain
 from domain.dependencies import get_user_domain
 
-from repository.schemes import CreateUser, UserRepr, PaginatedUsers
+from repository.schemes import (
+    CreateUser,
+    UserRepr,
+    UserProfile,
+    PaginatedUsers,
+)
 from repository.exceptions import IntegrityError, DoesNotExistError
 
 from settings import settings
-
+from exceptions import NotFoundHTTPException, BadRequestHTTPException
 
 router = APIRouter(
     prefix="/api/v1",
@@ -33,10 +38,10 @@ def create_user(
     try:
         return user_domain.create_user(new_user=new_user)
     except IntegrityError as e:
-        raise HTTPException(status_code=400, detail=e.message)
+        raise BadRequestHTTPException(detail=e.message)
 
 
-@users_router.get("/{user_id}", response_model=UserRepr, status_code=200)
+@users_router.get("/{user_id}/", response_model=UserRepr, status_code=200)
 def get_user(
     user_id: int,
     user_domain: UserDomain = Depends(get_user_domain),
@@ -44,7 +49,23 @@ def get_user(
     try:
         return user_domain.get_user_by_id(user_id)
     except DoesNotExistError:
-        raise HTTPException(404, "Not found")
+        raise NotFoundHTTPException()
+
+
+@users_router.put("/{user_id}/", response_model=UserProfile, status_code=200)
+def update_user(
+    user_id: int,
+    updated_user: UserRepr,
+    user_domain: UserDomain = Depends(get_user_domain),
+):
+    try:
+        return user_domain.update_user(
+            user_id=user_id, updated_user=updated_user
+        )
+    except DoesNotExistError:
+        raise NotFoundHTTPException()
+    except IntegrityError as e:
+        raise BadRequestHTTPException(detail=e.message)
 
 
 router.include_router(users_router)
