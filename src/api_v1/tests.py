@@ -27,11 +27,33 @@ def test_create_user(client: TestClient):
     assert response.status_code == 201
 
 
-def test_get_user(client: TestClient):
+def test_get_user(client: TestClient, user_with_email):
     user_id = 1
-    r = client.get(f"/api/v1/users/{user_id}")
+    response = client.get(f"/api/v1/users/{user_id}")
 
-    assert r.json() == {
+    assert response.json() == {
         "email": "test@test.com",
+        "phone": None,
+    }
+
+
+def test_update_user(client: TestClient, user_with_email):
+    user_id = 1
+    response_put = client.put(
+        f"/api/v1/users/{user_id}/",
+        json={"email": "new_test@test.com"},
+        headers={"Content-Type": "Application/json"},
+    )
+
+    assert response_put.json() == {
+        "id": 1,
+        "email": "new_test@test.com",
+        "phone": None,
+    }
+
+    response_get = client.get(f"/api/v1/users/{user_id}")
+
+    assert response_get.json() == {
+        "email": "new_test@test.com",
         "phone": None,
     }
